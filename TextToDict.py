@@ -25,6 +25,16 @@ class RouterIF:
                 DropIFace.append(key)
         return DropIFace
 
+    def readline3(self):
+        gen_lines = (line for line in self.output.splitlines() if line and not line.isspace())
+        print type(gen_lines)
+        try:
+            while True:
+                start,_,key = next(gen_lines).partition(" ")
+                if start == "Interface":
+                    self.IFlist[key] = [next(gen_lines).rpartition(" : ")[2] for _ in "123"]
+        except StopIteration:
+            return self.IFlist
 
 class RouterIFRegex:
     def __init__(self, output):
@@ -62,13 +72,16 @@ Interface 1/2
     output : 2345
     dropped : 31
 """
-    flag = 0
+    flag = 1
     if flag == 1:
         obj = RouterIF(message)
         d_interface = obj.ReadLine()
         #print d_interface
 
         print obj.IFaceWithDroppedPkt()
+        print "****"*10
+        print obj.readline3()
+        print "===="*10
     else:
         obj = RouterIFRegex(message)
         d = obj.Readline()
